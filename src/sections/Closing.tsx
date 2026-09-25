@@ -341,7 +341,7 @@ export function Contact({ motion }: { motion: boolean }) {
         />
         <div className="absolute inset-0 bg-[var(--ink)]/62" />
 
-        <div className="relative flex min-h-[96svh] flex-col justify-end px-[1.5rem] pb-[12vh] sm:px-[2.5rem]">
+        <div className="relative flex min-h-[96svh] flex-col justify-end px-[1.5rem] pt-[104px] pb-[12vh] sm:px-[2.5rem]">
           <div className="mx-auto w-full max-w-[1560px]">
             <Fade><p className="meta mb-[2rem] !text-white/45">{CONTACT.eyebrow}</p></Fade>
 

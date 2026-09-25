@@ -7,7 +7,7 @@ export function Logo({ tone = 'auto' }: { tone?: 'auto' | 'light' | 'dark' }) {
   return (
     <span className={'flex items-baseline gap-[0.625rem] ' + color}>
       <span className="font-serif text-[22px] leading-none tracking-[0.14em]">{BRAND.name}</span>
-      <span className="font-mono text-[8.5px] tracking-[0.3em] opacity-60">{BRAND.suffix}</span>
+      <span className="font-mono text-[9.5px] tracking-[0.28em] opacity-65">{BRAND.suffix}</span>
     </span>
   )
 }

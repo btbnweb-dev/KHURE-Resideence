@@ -82,7 +82,7 @@ export function Location({ motion }: { motion: boolean }) {
 
         {/* Concentric rings: nearest need at the centre, city at the edge. Decorative —
             the same order is written in the list above. */}
-        <div data-diagram className="relative mx-auto aspect-square w-full max-w-[520px]">
+        <div data-diagram className="relative mx-auto aspect-square w-full max-w-[300px] sm:max-w-[520px]">
           <svg viewBox="0 0 220 220" className="h-full w-full" aria-hidden="true">
             <g fill="none" stroke="var(--charcoal)" strokeOpacity="0.28" strokeWidth="0.6">
               {LOCATION.rings.map(ring => (
@@ -94,19 +94,26 @@ export function Location({ motion }: { motion: boolean }) {
               <line x1="6" y1="110" x2="214" y2="110" />
             </g>
             <circle cx="110" cy="110" r="4.5" fill="var(--bronze)" />
-            {LOCATION.rings.map((ring, i) => (
-              <text
-                key={ring.label}
-                x="114"
-                y={110 - ring.r + 4}
-                fill="var(--concrete)"
-                fontFamily="var(--font-mono)"
-                fontSize="5.4"
-                letterSpacing="0.6"
-              >
-                {String(i + 1).padStart(2, '0')} {ring.label.toUpperCase()}
-              </text>
-            ))}
+            {/* Ring labels are drawn inside the viewBox, so their rendered size follows the
+                container: readable at the 520px desktop diagram, but under 9px once the
+                square shrinks to phone width. The same four labels already exist as DOM
+                text in the list beside the diagram, so below `sm` the drawing keeps only
+                its geometry and the list carries the wording at a real font size. */}
+            <g className="hidden sm:block">
+              {LOCATION.rings.map((ring, i) => (
+                <text
+                  key={ring.label}
+                  x="114"
+                  y={110 - ring.r + 4}
+                  fill="var(--concrete)"
+                  fontFamily="var(--font-mono)"
+                  fontSize="5.4"
+                  letterSpacing="0.6"
+                >
+                  {String(i + 1).padStart(2, '0')} {ring.label.toUpperCase()}
+                </text>
+              ))}
+            </g>
           </svg>
         </div>
       </div>
@@ -426,7 +433,12 @@ export function FloorPlan({ motion }: { motion: boolean }) {
               {current.walls.map((d, i) => <path key={i} data-plan-stroke data-plan-el d={d} />)}
             </g>
 
-            <g fill="var(--charcoal)" fontFamily="var(--font-mono)" fontSize="4.6" letterSpacing="0.5">
+            <g
+              fill="var(--charcoal)"
+              fontFamily="var(--font-mono)"
+              className="text-[9.6px] min-[400px]:text-[8.2px] sm:text-[4.6px]"
+              letterSpacing="0.5"
+            >
               {current.rooms.map(room => (
                 <text key={room.t} data-plan-label data-plan-el x={room.x} y={room.y} textAnchor="middle">
                   {room.t}
@@ -447,7 +459,7 @@ export function FloorPlan({ motion }: { motion: boolean }) {
               textAnchor="middle"
               fill="var(--bronze)"
               fontFamily="var(--font-mono)"
-              fontSize="4.2"
+              className="text-[9.6px] min-[400px]:text-[7.4px] sm:text-[4.2px]"
               letterSpacing="0.6"
             >
               CONCEPT LAYOUT
