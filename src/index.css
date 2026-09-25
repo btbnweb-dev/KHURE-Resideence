@@ -1,0 +1,219 @@
+@import "@fontsource/cormorant-garamond/400.css";
+@import "@fontsource/cormorant-garamond/500.css";
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/jetbrains-mono/wght.css";
+@import "tailwindcss";
+/* The font packages above are imported from node_modules, which makes Tailwind treat this
+   stylesheet's location as ambiguous for automatic source detection. Naming the source
+   explicitly guarantees every class in src/ is scanned. */
+@source "./";
+
+@theme {
+  --font-serif: "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, monospace;
+}
+
+:root {
+  /* Warm architectural stone through deep charcoal, with a single restrained bronze.
+     No pure white and no pure black anywhere — printed architectural material never is,
+     and the slight warmth is what keeps the palette from reading as a default template. */
+  --stone: #f3f0ea;
+  --stone-dim: #e7e2d9;
+  --paper: #faf8f4;
+  --charcoal: #1a1a18;
+  --charcoal-soft: #26262300;
+  --ink: #12120f;
+  --concrete: #8c8880;
+  --concrete-dim: #a9a49b;
+  --bronze: #8a6a45;
+  --bronze-light: #b08d63;
+
+  color-scheme: light;
+  background: var(--stone);
+  color: var(--charcoal);
+  font-family: var(--font-sans);
+  font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+* { box-sizing: border-box; }
+
+html {
+  -webkit-text-size-adjust: 100%;
+  /* Anchor jumps land below the fixed navbar rather than under it. */
+  scroll-padding-top: 96px;
+  /* Sideways clipping belongs on the scrolling element, not on `body`. On `body` it makes
+     a clip context that silently disables `position: sticky` for everything inside it —
+     which is what stopped the residences image column from ever sticking. */
+  overflow-x: clip;
+}
+
+/* Anchor targets stop clear of the floating navbar. This governs where a jump *lands*; a
+   heading still passes behind the glass while free-scrolling, which is inherent to any
+   fixed bar and is why the panel is translucent rather than opaque. */
+section[id] {
+  scroll-margin-top: 96px;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--stone);
+}
+
+/* Reset element margins inside @layer base so Tailwind's utilities (which live in a later
+   layer) always win. Left unlayered, this rule has the same specificity as `.mb-[...]` but
+   comes later in the cascade, and silently cancelled every margin utility on a heading. */
+@layer base {
+  h1, h2, h3, p, figure, blockquote { margin: 0; }
+  /* `a`/`button` colour belongs in this layer too. Unlayered, `color: inherit` outranked
+     Tailwind's `text-[...]` utilities, so a link styled light-on-dark silently inherited the
+     surrounding charcoal instead — which is what made the secondary CTA near-black on the
+     dark contact image. */
+  a { color: inherit; }
+  button { color: inherit; }
+}
+a { text-decoration: none; }
+button { font: inherit; cursor: pointer; background: none; border: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+img { display: block; max-width: 100%; }
+
+::selection { background: var(--bronze); color: var(--paper); }
+
+:focus-visible {
+  outline: 2px solid var(--bronze);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0;
+}
+
+.skip-link {
+  position: fixed; top: 14px; left: 18px; z-index: 300;
+  padding: 12px 22px; background: var(--charcoal); color: var(--paper);
+  font-size: 14px; font-weight: 600; transform: translateY(-200%);
+}
+.skip-link:focus { transform: none; }
+
+/* ---------- typography ---------- */
+.display {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+}
+.meta {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--concrete);
+}
+.body-copy {
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: #4a4843;
+}
+
+/* ---------- reveal primitives ----------
+   A line mask: the wrapper clips, the inner span is moved by GSAP. Kept structural here
+   so nothing animates until the timeline says so — a CSS keyframe would fire at mount,
+   long before the reader has scrolled to it. */
+.line { display: block; overflow: hidden; }
+/* The mask clips to the line box, so a Cyrillic descender (д, ц, у) would be cut off at
+   tight leading. The inner span carries a little extra room and is pulled back up, which
+   keeps the glyphs whole without opening a visible gap between lines. */
+.line > span {
+  display: block;
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+  will-change: transform;
+}
+
+/* Image reveal wrapper. The frame clips and scales independently of the image inside it,
+   which is what lets a reveal and a counter-scale run at the same time. */
+/* `position` is only a default here. Unlayered it outranks Tailwind's layered utilities, so
+   `.frame.absolute` silently stayed relative — which stacked the residences image layers
+   vertically instead of overlapping them, leaving types B and C off-screen. */
+.frame { overflow: hidden; }
+.frame:not([class*='absolute']):not([class*='fixed']) { position: relative; }
+.frame > img { width: 100%; height: 100%; object-fit: cover; will-change: transform; }
+
+/* ---------- cursor ---------- */
+.cursor-ring {
+  position: fixed; top: 0; left: 0; z-index: 250;
+  display: grid; place-items: center;
+  width: 78px; height: 78px; margin: -39px 0 0 -39px;
+  border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--paper) 55%, transparent);
+  background: color-mix(in srgb, var(--charcoal) 22%, transparent);
+  backdrop-filter: blur(2px);
+  font-family: var(--font-mono);
+  font-size: 9.5px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--paper);
+  pointer-events: none;
+  opacity: 0;
+  transform: scale(0.4);
+  transition: opacity 0.35s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.cursor-ring.is-on { opacity: 1; transform: scale(1); }
+
+/* ---------- controls ---------- */
+.btn {
+  display: inline-flex; align-items: center; gap: 12px;
+  padding: 16px 30px;
+  font-size: 13.5px; font-weight: 500; letter-spacing: 0.02em;
+  border: 1px solid currentColor;
+  transition: background-color 0.4s, color 0.4s, border-color 0.4s;
+}
+.btn-solid { background: var(--charcoal); border-color: var(--charcoal); color: var(--paper); }
+.btn-solid:hover { background: var(--bronze); border-color: var(--bronze); }
+
+/* Secondary action over photography. It carries its own ground and border rather than
+   inheriting `currentColor`, which left it charcoal-on-charcoal over the dark contact
+   image. Still clearly subordinate to `.btn-solid`, but legible on a busy plate. */
+.btn-ghost {
+  background: rgba(20, 20, 18, 0.55);
+  border-color: rgba(255, 255, 255, 0.22);
+  color: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+}
+.btn-ghost:hover {
+  background: rgba(20, 20, 18, 0.72);
+  border-color: rgba(255, 255, 255, 0.42);
+  color: #fff;
+}
+
+/* Plan tab: a rule under the active option rather than a filled pill. */
+.tab {
+  position: relative;
+  padding: 10px 2px;
+  font-family: var(--font-mono);
+  font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+  color: var(--concrete);
+  transition: color 0.35s;
+}
+.tab[aria-selected="true"] { color: var(--charcoal); }
+.tab::after {
+  content: ""; position: absolute; left: 0; bottom: 0; height: 1px; width: 100%;
+  background: currentColor; transform: scaleX(0); transform-origin: left;
+  transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.tab[aria-selected="true"]::after { transform: scaleX(1); }
+
+/* ---------- reduced motion ----------
+   Content stays put; only the motion is removed. Every element that the timeline would
+   have revealed is made visible here, so nothing depends on a tween that never runs. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .cursor-ring { display: none; }
+}
