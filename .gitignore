@@ -25,3 +25,7 @@ dist-ssr
 
 # TypeScript incremental build cache
 *.tsbuildinfo
+
+# Local environment (never commit real values)
+.env
+.env.local
